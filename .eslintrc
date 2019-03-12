@@ -1,0 +1,11 @@
+{
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "extends": ["airbnb-base", "prettier"],
+  "rules": {
+    "semi": ["error", "never"],
+    "object-curly-newline": "off"
+  }
+}
