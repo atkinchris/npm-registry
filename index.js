@@ -5,7 +5,7 @@ const port = 3000
 
 app.all('*', (req, res) => {
   const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`
-  console.log(url)
+  console.log(req.method, url)
   res.send('Hello World!')
 })
 
