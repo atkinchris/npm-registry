@@ -4,6 +4,7 @@
   "description": "npm registry",
   "main": "src/index.js",
   "dependencies": {
+    "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express-http-proxy": "^1.5.1",
