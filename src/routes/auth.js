@@ -1,12 +1,11 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
-const expressJwt = require('express-jwt')
 const bcrypt = require('bcrypt')
 
 const config = require('../config.js')
+const withToken = require('../utils/withToken')
 
 const router = express.Router()
-const withToken = expressJwt({ secret: config.secret })
 
 const areCredentialsValid = async ({ name, password }) => {
   const userRecord = config.users.find(u => u.startsWith(`${name}:`))

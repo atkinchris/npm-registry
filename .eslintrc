@@ -6,6 +6,7 @@
   "extends": ["airbnb-base", "prettier"],
   "rules": {
     "semi": ["error", "never"],
-    "object-curly-newline": "off"
+    "object-curly-newline": "off",
+    "no-await-in-loop": "off"
   }
 }
