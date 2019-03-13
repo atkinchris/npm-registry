@@ -26,5 +26,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Chris Atkin <atkinchris@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "nodemonConfig": {
+    "ignore": [
+      "example/*",
+      "storage/*"
+    ]
+  }
 }
