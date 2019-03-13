@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
 const fs = require('fs-extra')
 const path = require('path')
-const crypto = require('crypto')
 
 const { storageFolder } = require('./config')
 const { RegistryLogicError } = require('./utils/errors')
@@ -42,6 +41,11 @@ class Registry {
     await fs.writeJSON(manifestPath, manifest, { spaces: '\t' })
   }
 
+  async hasPackage(pkgName) {
+    const registry = await this.getRegistry()
+    return !!registry[pkgName]
+  }
+
   async addPackage(pkg) {
     const { _attachments: attachments, 'dist-tags': distTags } = pkg
     const tags = Object.keys(distTags)
@@ -71,16 +75,9 @@ class Registry {
     // eslint-disable-next-line no-restricted-syntax
     for (const [filename, attachment] of Object.entries(attachments)) {
       const data = Buffer.from(JSON.stringify(attachment.data), 'base64')
+      const tarballPath = path.join(packagePath, '-', filename)
 
-      const hash = crypto.createHash('sha1')
-      hash.update(data)
-      const sha = hash.digest('hex')
-      const ext = path.extname(filename)
-      const baseName = path.basename(filename, ext)
-      const tarballFolder = path.join(packagePath, baseName)
-      const tarballPath = path.join(tarballFolder, `${sha}${ext}`)
-
-      await fs.mkdirp(tarballFolder)
+      await fs.mkdirp(path.dirname(tarballPath))
       await fs.writeFile(tarballPath, data, {
         'Content-Type': attachment.content_type,
         'Content-Length': attachment.length,
