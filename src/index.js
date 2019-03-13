@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 
 const authRoutes = require('./routes/auth')
 const packageRoutes = require('./routes/package')
+const auditRoutes = require('./routes/audit')
 const config = require('./config')
 
 const app = express()
@@ -10,6 +11,7 @@ app.use(bodyParser.json())
 
 app.use(authRoutes)
 app.use(packageRoutes)
+app.use(auditRoutes)
 
 app.all('*', (req, res) => {
   console.log('Unhandled request')
