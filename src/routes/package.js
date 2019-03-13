@@ -3,6 +3,7 @@ const proxy = require('express-http-proxy')
 
 const config = require('../config.js')
 const withToken = require('../utils/withToken')
+const { RegistryLogicError } = require('../utils/errors')
 const registry = require('../registry')
 
 const router = express.Router()
@@ -20,8 +21,12 @@ router.put('/:package', withToken, async (req, res) => {
     const newPkgManifest = await registry.addPackage(pkg)
     res.status(200).json(newPkgManifest)
   } catch (err) {
-    console.error(err)
-    res.sendStatus(500)
+    if (err instanceof RegistryLogicError) {
+      res.status(400).json({ error: err.message })
+      return
+    }
+
+    throw err
   }
 })
 

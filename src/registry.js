@@ -4,6 +4,7 @@ const path = require('path')
 const crypto = require('crypto')
 
 const { storageFolder } = require('./config')
+const { RegistryLogicError } = require('./utils/errors')
 
 const EMPTY_REGISTRY = {}
 const registryPath = path.join(storageFolder, 'registry.json')
@@ -26,7 +27,7 @@ class Registry {
 
   async setRegistry(registry) {
     await fs.mkdirp(path.dirname(registryPath))
-    await fs.writeJson(registryPath, registry)
+    await fs.writeJson(registryPath, registry, { spaces: '\t' })
 
     this.cachedRegistry = registry
   }
@@ -38,7 +39,7 @@ class Registry {
   async setManifest(pkgName, manifest) {
     const manifestPath = getManifestPath(pkgName)
     await fs.mkdirp(path.dirname(manifestPath))
-    await fs.writeJSON(manifestPath, manifest)
+    await fs.writeJSON(manifestPath, manifest, { spaces: '\t' })
   }
 
   async addPackage(pkg) {
@@ -47,18 +48,19 @@ class Registry {
     const tag = tags[0]
 
     if (tags.length !== 1 || !tag) {
-      throw Error('Package must have 1 dist-tag')
+      throw new RegistryLogicError('Package must have 1 dist-tag')
     }
 
-    const version = tags[tag]
     const existingManifest = await this.getManifest(pkg.name)
     const newManifest = {
       ...pkg,
     }
 
     if (existingManifest) {
-      if (existingManifest.versions[tag]) {
-        throw Error(`Package version ${version} is already published`)
+      const version = distTags[tag]
+
+      if (existingManifest.versions[version]) {
+        throw new RegistryLogicError(`Package version ${version} is already published`)
       }
 
       newManifest.versions = { ...existingManifest.versions, ...pkg.versions }
